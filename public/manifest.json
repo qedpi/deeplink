@@ -1,27 +1,45 @@
 {
   "manifest_version": 2,
   "version": "0.0.1",
-  "short_name": "React App",
-  "name": "Create React App Sample",
-  "description": "Sample application showing how to create an extension with Create React App",
+  "short_name": "Deep Link",
+  "name": "Deep Link",
+  "description": "Link to any text on a page!",
   "browser_action": {
     "default_title": "CRE",
     "default_popup": "popup.html"
   },
   "background": {
-    "scripts": ["background.bundle.js"]
+    "scripts": [
+      "background.bundle.js"
+    ],
+    "persistent": false
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
-      "js": ["contentScript.bundle.js"]
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "contentScript.bundle.js"
+      ]
     }
   ],
   "icons": {
-    "16": "img/icon-16.png",
-    "48": "img/icon-48.png",
     "128": "img/icon-128.png"
   },
-  "permissions": ["activeTab"],
+  "commands": {
+    "copy-deeplink": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+K",
+        "mac": "Command+Shift+K"
+      },
+      "description": "Copy deep link"
+    }
+  },
+  "permissions": [
+    "activeTab",
+    "tabs",
+    "clipboardWrite"
+  ],
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
 }

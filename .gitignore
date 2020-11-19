@@ -1,4 +1,7 @@
 .idea
+backups.js
+# packed
+store/
 
 # dependencies
 /node_modules

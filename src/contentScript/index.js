@@ -1,22 +1,29 @@
 /* global chrome */
 
+const wrapDeepLink = selection => {
+    const url = document.location.toString().split('#:~:')[0];
+    const deepLink = `${url}#:~:text=${encodeURIComponent(selection)}`;
+    console.log(`content: creating deeplink from ${url} \n
+                 > ${deepLink}`);
+    return deepLink
+}
+
+const copyToClipboard = (text, sendResponse) => {
+    navigator.clipboard.writeText(text).then(() => {
+        console.log('copy to clipboard success')
+        sendResponse({data: text});
+    }, () => {
+        console.log('failed to copy to clipboard!')
+        sendResponse({});
+    });
+}
+
 chrome.runtime.onMessage.addListener(
     (request, sender, sendResponse) => {
-        if (request.method === "getSelection") {
-            const selection = window.getSelection().toString().trim()
-            let url = document.location.toString().split('#:~:')[0]
-            console.log(url)
-            const deepLink = `${url}#:~:text=${encodeURIComponent(selection)}
-            `
-            navigator.clipboard.writeText(deepLink).then(() => {
-                console.log('copy to clipboard success')
-                sendResponse({data: deepLink});
-            }, () => {
-                console.log('failed to copy to clipboard!')
-                sendResponse({data: undefined});
-            });
-        }
-        else
-            sendResponse({});
+        const selection = request.selectionText || window.getSelection().toString().trim();
+        const deepLink = wrapDeepLink(selection)
+        copyToClipboard(deepLink, sendResponse)
+        // note: without sendResponse or return, content script will close connection, causing error for background script
+        sendResponse({});
     }
 )
